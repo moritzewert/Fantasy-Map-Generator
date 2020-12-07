@@ -484,6 +484,7 @@ function saveGeoJSON() {
       Routes: saveGeoJSON_Roads,
       Rivers: saveGeoJSON_Rivers,
       Markers: saveGeoJSON_Markers,
+      Burgs: saveGeoJSON_Burgs,
       Close: function() {$(this).dialog("close");}
     }
   });

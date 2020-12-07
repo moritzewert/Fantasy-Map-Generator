@@ -483,6 +483,74 @@ function saveGeoJSON_Rivers(pretend = false) {
   return data;
 }
 
+function saveGeoJSON_Burgs(pretend = false) {
+  let data = getBurgsFeatureCollection();
+
+  const name = getFileName("Burgs") + ".geojson";
+  if (!pretend) downloadFile(JSON.stringify(data), name, "application/json");
+
+  return data;
+}
+
+function getBurgsFeatureCollection() {
+  return {
+    type: 'FeatureCollection',
+    features: getBurgsFeatures(),
+  };
+}
+
+function getBurgsFeatures() {
+  let data = [];
+
+  pack.burgs.filter(b => b.i && !b.removed).forEach(burg => data.push(getBurgFeature(burg)));
+
+  return data;
+}
+
+function getBurgFeature(burg) {
+  console.log(burg);
+  return {
+    type: 'Feature',
+    geometry: getBurgGeometry(burg),
+    properties: getBurgProperties(burg),
+  };
+}
+
+function getBurgGeometry(burg) {
+  return {
+    type: 'Point',
+    coordinates: [
+      mapCoordinates.lonW + (burg.x / graphWidth) * mapCoordinates.lonT,
+      mapCoordinates.latN - (burg.y / graphHeight) * mapCoordinates.latT,
+    ],
+  };
+}
+
+function getBurgProperties(burg) {
+  return {
+    id: burg.i,
+    name: burg.name,
+    cell: burg.cell,
+    province: pack.cells.province[burg.cell],
+    state: burg.state,
+    culture: burg.culture,
+    religion: pack.cells.religion[burg.cell],
+    population: rn(burg.population * populationRate.value * urbanization.value),
+    elevation: parseInt(getHeight(pack.cells.h[burg.cell])),
+    isCapital: !!burg.capital,
+    hasPort: !!burg.port,
+    hasCitadel: !!burg.citadel,
+    hasWalls: !!burg.walls,
+    hasPlaza: !!burg.plaza,
+    hasTemple: !!burg.temple,
+    hasShantyTown: !!burg.shanty,
+    location: {
+      x: burg.x,
+      y: burg.y,
+    },
+  };
+}
+
 function getMarkersFeatureCollection() {
   return {
     type: 'FeatureCollection',
