@@ -518,6 +518,10 @@ function getMarkerProperties(node) {
   return {
     id: node.id,
     type: node.dataset.id.substring(8),
+    location: {
+      x: node.dataset.x,
+      y: node.dataset.y,
+    },
   };
 }
 
