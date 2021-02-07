@@ -480,6 +480,7 @@ function saveGeoJSON() {
 
   $("#alert").dialog({title: "GIS data export", resizable: false, width: "35em", position: {my: "center", at: "center", of: "svg"},
     buttons: {
+      All: saveGeoJSON_All,
       Cells: saveGeoJSON_Cells,
       Routes: saveGeoJSON_Roads,
       Rivers: saveGeoJSON_Rivers,

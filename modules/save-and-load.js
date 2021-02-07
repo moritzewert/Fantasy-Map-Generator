@@ -380,6 +380,52 @@ function getCellProperties(id) {
   };
 }
 
+function saveHeightmapGrid(pretend = false) {
+
+  const name = getFileName("Heightmap") + ".json";
+  const cells = pack.cells;
+  let data = [];
+  for (let x = 0; x < graphWidth; x++) {
+    let col = [];
+    for (let y = 0; y < graphHeight; y++) {
+      const i = findCell(x, y);
+      const f = cells.f[i];
+      col.push(getElevation(pack.features[f], pack.cells.h[i]) - getDepth(pack.features[f], pack.cells.h[i], [x,y]));
+    }
+    data.push(col);
+  }
+  if (!pretend) downloadFile(JSON.stringify(data), name, "application/json");
+  return data;
+}
+
+function saveBiomeGrid(pretend = false) {
+
+  const name = getFileName("Biomemap") + ".json";
+  const cells = pack.cells;
+  let data = [];
+  for (let x = 0; x < graphWidth; x++) {
+    let col = [];
+    for (let y = 0; y < graphHeight; y++) {
+      const i = findCell(x, y);
+      const f = cells.f[i];
+      col.push(biomesData.name[cells.biome[i]]);
+    }
+    data.push(col);
+  }
+  if (!pretend) downloadFile(JSON.stringify(data), name, "application/json");
+  return data;
+}
+
+function saveGeoJSON_All(pretend = false) {
+  return {
+    cells: saveGeoJSON_Cells(pretend),
+    roads: saveGeoJSON_Roads(pretend),
+    rivers: saveGeoJSON_Rivers(pretend),
+    markers: saveGeoJSON_Markers(pretend),
+    burgs: saveGeoJSON_Burgs(pretend),
+  };
+}
+
 function saveGeoJSON_Cells(pretend = false) {
   let data = getCellsFeatureCollection();
 
@@ -508,7 +554,6 @@ function getBurgsFeatures() {
 }
 
 function getBurgFeature(burg) {
-  console.log(burg);
   return {
     type: 'Feature',
     geometry: getBurgGeometry(burg),
@@ -597,7 +642,7 @@ function saveGeoJSON_Markers(pretend = false) {
   let data = getMarkersFeatureCollection();
 
   const name = getFileName("Markers") + ".geojson";
-  if (!pretend) downloadFile(data, name, "application/json");
+  if (!pretend) downloadFile(JSON.stringify(data), name, "application/json");
 
   return data;
 }

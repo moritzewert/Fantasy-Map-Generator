@@ -173,19 +173,19 @@ function toDMS(coord, c) {
 
 // get surface elevation
 function getElevation(f, h) {
-  if (f.land) return getHeight(h) + " (" + h + ")"; // land: usual height
-  if (f.border) return "0 " + heightUnit.value; // ocean: 0
+  if (f.land) return getHeight(h); // land: usual height
+  if (f.border) return 0; // ocean: 0
 
   // lake: lowest coast height - 1
   const lakeCells = Array.from(pack.cells.i.filter(i => pack.cells.f[i] === f.i));
   const heights = lakeCells.map(i => pack.cells.c[i].map(c => pack.cells.h[c])).flat().filter(h => h > 19);
   const elevation = (d3.min(heights)||20) - 1;
-  return getHeight(elevation) + " (" + elevation + ")";
+  return getHeight(elevation);
 }
 
 // get water depth
 function getDepth(f, h, p) {
-  if (f.land) return "0 " + heightUnit.value; // land: 0
+  if (f.land) return 0; // land: 0
   if (!f.border) return getHeight(h, "abs"); // lake: pack abs height
   const gridH = grid.cells.h[findGridCell(p[0], p[1])];
   return getHeight(gridH, "abs"); // ocean: grig height
@@ -210,7 +210,7 @@ function getHeight(h, abs) {
   else if (h < 20 && h > 0) height = (h - 20) / h * 50;
 
   if (abs) height = Math.abs(height);
-  return rn(height * unitRatio) + " " + unit;
+  return rn(height * unitRatio);
 }
 
 // get user-friendly (real-world) precipitation value from map data
